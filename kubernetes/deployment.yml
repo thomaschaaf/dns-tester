@@ -12,4 +12,6 @@ spec:
       - name: DNS_NAME
         value: 'kubernetes.default.svc.cluster.local'
       - name: DNS_NAME_TIMEOUT
-        value: '100'
+        value: '300'
+      - name: WAIT_BETWEEN_REQUESTS
+        value: '50'

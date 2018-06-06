@@ -10,6 +10,7 @@ const dnsLoopupAsync = util.promisify(dns.lookup);
 
 const dnsName = process.env.DNS_NAME || 'kubernetes.default.svc.cluster.local';
 const dnsTimeout = parseInt(process.env.DNS_NAME_TIMEOUT, 10) || 100;
+const waitBetweenRequests = parseInt(process.env.WAIT_BETWEEN_REQUESTS, 10) || 100;
 
 (async () => {
   const timeout = new Timeout();
@@ -37,7 +38,7 @@ const dnsTimeout = parseInt(process.env.DNS_NAME_TIMEOUT, 10) || 100;
       timeout.clear();
     }
 
-    await sleep(10);
+    await sleep(waitBetweenRequests);
 
     if (lookups % 100 == 0) {
       const time = Math.round((+new Date() - startDate) / 1000);

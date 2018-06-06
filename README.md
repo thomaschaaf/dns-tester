@@ -1,6 +1,6 @@
 #  Tool to test how many dns loopups are slower than 100 ms
 
-You can specify the `DNS_NAME` and `DNS_NAME_TIMEOUT` environment variables.
+You can specify the `DNS_NAME`, `DNS_NAME_TIMEOUT` and `WAIT_BETWEEN_REQUESTS` environment variables.
 
 Start with:
 
