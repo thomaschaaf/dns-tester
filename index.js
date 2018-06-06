@@ -1,5 +1,6 @@
 const dns = require('dns');
 const util = require('util');
+const Timeout = require('await-timeout');
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -7,7 +8,12 @@ function sleep(ms) {
 
 const dnsLoopupAsync = util.promisify(dns.lookup);
 
+const dnsName = process.env.DNS_NAME || 'kubernetes.default.svc.cluster.local';
+const dnsTimeout = parseInt(process.env.DNS_NAME_TIMEOUT, 10) || 100;
+
 (async () => {
+  const timeout = new Timeout();
+
   const startDate = +new Date();
   let lookups = 0;
   let failedLookups = 0;
@@ -15,19 +21,22 @@ const dnsLoopupAsync = util.promisify(dns.lookup);
   while(true) {
     try {
       const lookup = await Promise.race([
-        dnsLoopupAsync('google.com'),
-        sleep(200)
+        dnsLoopupAsync(dnsName),
+        timeout.set(dnsTimeout, 'DNS Timeout!')
       ]);
 
       if (!lookup.address) {
-          throw new Error('Address missing', lookup);
+          throw new Error(lookup);
       }
 
       lookups += 1;
     } catch (err) {
       failedLookups += 1;
       console.error('Lookup failed', err);
+    } finally {
+      timeout.clear();
     }
+
     await sleep(10);
 
     if (lookups % 100 == 0) {
