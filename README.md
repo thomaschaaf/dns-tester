@@ -12,4 +12,4 @@ Get logs with:
 
 Clean up with:
 
-    kubectl delete pod dns-tester
+    kubectl delete -f kubernetes/deployment.yml
